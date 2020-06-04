@@ -7,6 +7,8 @@ func TestPiece_Color(t *testing.T) {
 		WhiteKing: White,
 		BlackQueen: Black,
 		NoPiece: NoColor,
+		WhitePawn: White,
+		BlackKnight: Black,
 	}
 	for piece, color := range testCases {
 		actualColor := piece.Color()
@@ -21,6 +23,8 @@ func TestPiece_Type(t *testing.T) {
 		WhiteKing: King,
 		BlackQueen: Queen,
 		NoPiece: NoPieceType,
+		WhitePawn: Pawn,
+		BlackKnight: Knight,
 	}
 	for piece, pieceType := range testCases {
 		actualType := piece.Type()
