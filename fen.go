@@ -44,7 +44,7 @@ func parseBoard(s string) (Board, error) {
 			pieces[square] = piece
 			file++
 		} else if n, ok := charToDigitMap[r]; ok {
-			file += n - 1
+			file += n
 		} else {
 			return nil, fmt.Errorf("failed to parse symbol: %c", r)
 		}
@@ -62,10 +62,7 @@ func ParseFEN(fen string) (*Position, error) {
 	if err != nil {
 		return nil, err
 	}
-	castleRights := CastleRights(segments[2])
-	if !castleRights.isValid() {
-		return nil, fmt.Errorf("castle rights is not in valid format: %s", castleRights)
-	}
+	castleRights := parseCastleRights(segments[2])
 	epSquare, ok := strToSquareMap[segments[3]]
 	if !ok {
 		return nil, fmt.Errorf("fail to parse '%s' as an en-passant square", segments[3])

@@ -31,3 +31,13 @@ func (c Color) Name() string {
 	}
 	return "No Color"
 }
+
+// Other returns the opposite color of the receiver.
+func (c Color) Other() Color {
+	if c == White {
+		return Black
+	} else if c == Black {
+		return White
+	}
+	return NoColor
+}

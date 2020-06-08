@@ -29,7 +29,7 @@ func (p Piece) Name() string {
 	return p.Color().Name() + p.Type().Name()
 }
 
-func makePiece(color Color, pieceType PieceType) Piece {
+func getPiece(color Color, pieceType PieceType) Piece {
 	return Piece(int8(color) << 3 + int8(pieceType))
 }
 

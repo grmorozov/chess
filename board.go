@@ -3,7 +3,7 @@ package chess
 // Board represents chess board with pieces on it
 type Board map[Square]Piece
 
-func (b Board) Equal(board Board) bool {
+func (b Board) equal(board Board) bool {
 	if len(b) != len(board) {
 		return false
 	}
@@ -13,4 +13,13 @@ func (b Board) Equal(board Board) bool {
 		}
 	}
 	return true
+}
+
+// Copy creates a copy of a board
+func (b Board) copy() Board {
+	board := Board{}
+	for s, p := range b {
+		board[s] = p
+	}
+	return board
 }

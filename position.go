@@ -1,23 +1,6 @@
 package chess
 
-// CastleRights is a string representation of rights to castle
-type CastleRights string
 
-func (cr CastleRights) isValid() bool {
-	if cr == "-" {
-		return true
-	}
-	if len(cr) < 1 || len(cr) > 4 {
-		return false
-	}
-	validChars := map[rune]bool{'k': true, 'K': true, 'q': true, 'Q': true}
-	for _, r := range cr {
-		if _, ok := validChars[r]; !ok {
-			return false
-		}
-	}
-	return true
-}
 
 // Position represents a position in chess game
 type Position struct {
@@ -29,16 +12,22 @@ type Position struct {
 	castleRight   CastleRights // rights of a castle
 }
 
-func (p *Position) Equal(position *Position) bool {
+func (p *Position) equal(position *Position) bool {
 	if p == nil || position == nil {
 		return false
 	}
-	return p.board.Equal(position.board) &&
+	return p.board.equal(position.board) &&
 		p.activeColor == position.activeColor &&
 		p.epSquare == position.epSquare &&
 		p.castleRight == position.castleRight &&
 		p.movesCount == position.movesCount &&
 		p.halfMoveClock == position.halfMoveClock
+}
+
+// Copy creates a new copy of the position
+func (p *Position) copy() *Position {
+	return &Position{board: p.board.copy(), activeColor: p.activeColor, epSquare: p.epSquare,
+		castleRight: p.castleRight, movesCount: p.movesCount, halfMoveClock: p.halfMoveClock}
 }
 
 // NewStartPosition - initiates new start position
@@ -77,5 +66,66 @@ func NewStartPosition() *Position {
 		getSquare(FileG, Rank7): BlackPawn,
 		getSquare(FileH, Rank7): BlackPawn,
 	}
-	return &Position{board: board, activeColor: White, epSquare: NoSquare, castleRight: "KQkq", movesCount: 1, halfMoveClock: 0}
+	return &Position{board: board, activeColor: White, epSquare: NoSquare, castleRight: parseCastleRights("KQkq"), movesCount: 1, halfMoveClock: 0}
+}
+
+// MakeMove - apply move to the position and returns new position, no validation
+func (p *Position) MakeMove(m *Move) *Position {
+	board := p.board.copy()
+	piece := board[m.From]
+	isCapture := false
+	if targetPiece, ok := board[m.To]; ok && targetPiece.Type() != NoPieceType {
+		isCapture = true
+	}
+	board[m.To] = board[m.From]
+	delete(board, m.From)
+
+	if m.Promotion != NoPieceType {
+		board[m.To] = getPiece(piece.Color(), m.Promotion)
+	}
+
+	// if castle, move rook (classic chess only, doesn't work for chess960)
+	if piece.Type() == King && (int(m.From.File())+int(m.To.File()))%2==0 {
+		var from, to Square
+		if m.From.File() < m.To.File() {	// king side
+			from = getSquare(FileH, m.To.Rank())
+			to = getSquare(FileF, m.To.Rank())
+		} else {	// queen side
+			from = getSquare(FileA, m.To.Rank())
+			to = getSquare(FileD, m.To.Rank())
+		}
+		// move rook
+		board[to] = board[from]
+		delete(board, from)
+	}
+
+	// remove en-passant pawn
+	if piece.Type() == Pawn && m.To == p.epSquare {
+		delete(board, getSquare(p.epSquare.File(), m.From.Rank()))
+	}
+
+	epSquare := NoSquare
+	if piece.Type() == Pawn && (int(m.From.Rank())+int(m.To.Rank()))%2 == 0 {
+		rank := Rank((int(m.From.Rank()) + int(m.To.Rank())) / 2)
+		epSquare = getSquare(m.From.File(), rank)
+	}
+
+	movesCount := p.movesCount
+	if p.activeColor == Black {
+		movesCount++
+	}
+
+	halfMove := p.halfMoveClock + 1
+	if piece.Type() == Pawn || isCapture {
+		halfMove = 0
+	}
+
+	return &Position{
+		board:         board,
+		activeColor:   p.activeColor.Other(),
+		epSquare:      epSquare,
+		halfMoveClock: halfMove,
+		movesCount:    movesCount,
+		castleRight:   p.castleRight.update(m, p.board),
+	}
 }
