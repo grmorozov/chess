@@ -5,7 +5,7 @@ import "testing"
 func TestPosition_MakeMove(t *testing.T) {
 	type testCase struct {
 		move *Move
-		fen string
+		fen  string
 	}
 	position := NewStartPosition()
 	testCases := []testCase{
@@ -15,7 +15,7 @@ func TestPosition_MakeMove(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		position = position.MakeMove(tc.move)
-		if expected, err := ParseFEN(tc.fen); err != nil{
+		if expected, err := ParseFEN(tc.fen); err != nil {
 			t.Errorf("fail to parse fen %s: %v", tc.fen, err)
 		} else if !position.equal(expected) {
 			t.Errorf("position is not equal expected")

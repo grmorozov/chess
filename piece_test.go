@@ -4,10 +4,10 @@ import "testing"
 
 func TestPiece_Color(t *testing.T) {
 	testCases := map[Piece]Color{
-		WhiteKing: White,
-		BlackQueen: Black,
-		NoPiece: NoColor,
-		WhitePawn: White,
+		WhiteKing:   White,
+		BlackQueen:  Black,
+		NoPiece:     NoColor,
+		WhitePawn:   White,
 		BlackKnight: Black,
 	}
 	for piece, color := range testCases {
@@ -20,10 +20,10 @@ func TestPiece_Color(t *testing.T) {
 
 func TestPiece_Type(t *testing.T) {
 	testCases := map[Piece]PieceType{
-		WhiteKing: King,
-		BlackQueen: Queen,
-		NoPiece: NoPieceType,
-		WhitePawn: Pawn,
+		WhiteKing:   King,
+		BlackQueen:  Queen,
+		NoPiece:     NoPieceType,
+		WhitePawn:   Pawn,
 		BlackKnight: Knight,
 	}
 	for piece, pieceType := range testCases {

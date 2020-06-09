@@ -1,7 +1,5 @@
 package chess
 
-
-
 // Position represents a position in chess game
 type Position struct {
 	board         Board        // pieces on the board
@@ -85,12 +83,12 @@ func (p *Position) MakeMove(m *Move) *Position {
 	}
 
 	// if castle, move rook (classic chess only, doesn't work for chess960)
-	if piece.Type() == King && (int(m.From.File())+int(m.To.File()))%2==0 {
+	if piece.Type() == King && (int(m.From.File())+int(m.To.File()))%2 == 0 {
 		var from, to Square
-		if m.From.File() < m.To.File() {	// king side
+		if m.From.File() < m.To.File() { // king side
 			from = getSquare(FileH, m.To.Rank())
 			to = getSquare(FileF, m.To.Rank())
-		} else {	// queen side
+		} else { // queen side
 			from = getSquare(FileA, m.To.Rank())
 			to = getSquare(FileD, m.To.Rank())
 		}
