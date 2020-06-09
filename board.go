@@ -23,3 +23,22 @@ func (b Board) copy() Board {
 	}
 	return board
 }
+
+// Draw returns visual representation of the board to display in console
+func (b Board) Draw() string {
+	s := "\n \u2001A\u2001B\u2001C\u2001D\u2001E\u2001F\u2001G\u2001H\n"
+	for r := 7; r >= 0; r-- {
+		s += Rank(r).String() + "\u2001"
+		for f := 0; f < numOfSquaresInRow; f++ {
+			p := b[getSquare(File(f), Rank(r))]
+			if p == NoPiece {
+				s += "\u2001"
+			} else {
+				s += p.String()
+			}
+			s += " "
+		}
+		s += "\n"
+	}
+	return s
+}

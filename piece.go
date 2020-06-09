@@ -30,6 +30,10 @@ func (p Piece) Name() string {
 	return p.Color().Name() + p.Type().Name()
 }
 
+func (p Piece) String() string {
+	return pieceCharacters[p]
+}
+
 func getPiece(color Color, pieceType PieceType) Piece {
 	return Piece(int8(color)<<3 + int8(pieceType))
 }
@@ -49,4 +53,22 @@ const (
 	BlackRook   = Piece(int8(Black)<<3 + int8(Rook))
 	BlackQueen  = Piece(int8(Black)<<3 + int8(Queen))
 	BlackKing   = Piece(int8(Black)<<3 + int8(King))
+)
+
+var (
+	pieceCharacters = map[Piece]string{
+		NoPiece: " ",
+		BlackKing: "\u265A",
+		BlackQueen: "♕",
+		BlackRook: "♖",
+		BlackBishop: "♗",
+		BlackKnight: "♘",
+		BlackPawn: "♙",
+		WhiteKing: "\u2654", //"♚",
+		WhiteQueen: "♛",
+		WhiteRook: "♜",
+		WhiteBishop: "♝",
+		WhiteKnight: "♞",
+		WhitePawn: "♟",
+	}
 )
