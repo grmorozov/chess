@@ -21,6 +21,21 @@ var charToPieceMap = map[rune]Piece{
 	'N': WhiteKnight,
 }
 
+var pieceToCharMap = map[Piece]rune{
+	BlackPawn:   'p',
+	WhitePawn:   'P',
+	BlackQueen:  'q',
+	WhiteQueen:  'Q',
+	BlackKing:   'k',
+	WhiteKing:   'K',
+	BlackRook:   'r',
+	WhiteRook:   'R',
+	BlackBishop: 'b',
+	WhiteBishop: 'B',
+	BlackKnight: 'n',
+	WhiteKnight: 'N',
+}
+
 var charToDigitMap = map[rune]int{
 	'1': 1,
 	'2': 2,
@@ -31,6 +46,8 @@ var charToDigitMap = map[rune]int{
 	'7': 7,
 	'8': 8,
 }
+
+var digits = "012345678"
 
 func parseBoard(s string) (Board, error) {
 	pieces := make(map[Square]Piece)
@@ -84,4 +101,37 @@ func ParseFEN(fen string) (*Position, error) {
 	position.movesCount = uint8(fullMovesNumber)
 
 	return position, nil
+}
+
+func GenerateFEN(position *Position) string {
+	s := ""
+	// board
+	for r := 7; r >= 0; r-- {
+		n := 0
+		for f := 0; f < numOfSquaresInRow; f++ {
+			piece := position.board[getSquare(File(f), Rank(r))]
+			if piece == NoPiece {
+				n++
+			} else {
+				if n > 0 {
+					s += string(digits[n])
+				}
+				s += string(pieceToCharMap[piece])
+				n = 0
+			}
+		}
+		if n > 0 {
+			s += string(digits[n])
+		}
+		if r > 0 {
+			s += "/"
+		}
+	}
+
+	epSquare := "-"
+	if position.epSquare != NoSquare {
+		epSquare = position.epSquare.String()
+	}
+	return fmt.Sprintf("%s %s %s %s %d %d", s, position.activeColor, position.castleRight, epSquare,
+		position.halfMoveClock, position.movesCount)
 }
