@@ -127,3 +127,9 @@ func (p *Position) MakeMove(m *Move) *Position {
 		castleRight:   p.castleRight.update(m, p.board),
 	}
 }
+
+func (p *Position) IsValidMove(m *Move) bool {
+	// todo: implement move validation
+	// one implementation option would be generating all possible moves and check if the move is one of them
+	return true
+}
